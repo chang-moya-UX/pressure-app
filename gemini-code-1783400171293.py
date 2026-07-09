@@ -4,7 +4,7 @@ import streamlit as st
 st.set_page_config(page_title="圧力単位変換 (MPa / psi / kg/cm²)", page_icon="⚙️", layout="centered")
 
 st.title("圧力単位変換 ")
-st.write("MPa、psi、kg/cm² の3つの単位に特化した相互変換ツールです。")
+st.write("MPaとPSIとkg/cm²を変換する")
 
 # 1 Pa を基準とした換算辞書 (1 unit = 何 Pa か)
 pa_coefficients = {
@@ -19,7 +19,7 @@ st.markdown("### 🔄 単位を選択して変換")
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    input_value = st.number_input("数値を入力", value=1.0, format="%.4f")
+    input_value = st.number_input("圧力計の数値を入力", value=, format="%.4f")
 
 with col2:
     from_unit = st.selectbox("変換前", list(pa_coefficients.keys()), index=0)
