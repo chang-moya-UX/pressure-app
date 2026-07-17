@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>圧力単位変換 ⚙️</title>
+    <!-- Web App Manifest for PWA -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIuWcl+WKm+WNmOS9jeWkieaPtCIsCiAgInNob3J0X25hbWUiOiAi5ZyV5Yqb5aSJ5o+0IiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMxZTFlMWUiLAogICJ0aGVtZV9jb2xvciI6ICIjMWE3M2U4IiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO3V0ZjgsPHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48cmVjdCB3aWR0aD0nMTAwJyBoZWlnaHQ9JzEwMCcgZng9JzUwJyBmeT0nNTAnIHI9JzI1JyBmaWxsPScjMWE3M2U4Jy8+PHRleHQgeT0nLjNlbScgeD0nNTAlJyB5PSc1MCUnIGZvbnQtc2l6ZT0nNTUnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGR5bT0nLjNlbSc+4pqZPC90ZXh0Pjwvc3ZnPiIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICAgIH0KICBdCn0=">
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --accent-color: #1a73e8;
+            --accent-light: #e8f0fe;
+            --border-color: #dadce0;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --radius: 12px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --card-bg: #1e1e1e;
+                --text-color: #e0e0e0;
+                --accent-color: #8ab4f8;
+                --accent-light: #1b2e4b;
+                --border-color: #3c4043;
+                --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #70757a;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #70757a;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            outline: none;
+            background: var(--card-bg);
+            color: var(--text-color);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            -moz-appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+
+        .unit-select-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2370757a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 36px;
+        }
+
+        select:focus {
+            border-color: var(--accent-color);
+        }
+
+        .result-box {
+            background-color: var(--accent-light);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--accent-color);
+            display: none;
+        }
+
+        .result-box.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .result-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .result-value {
+            font-size: 20px;
+            font-weight: 700;
+            word-break: break-all;
+        }
+
+        .placeholder-message {
+            background-color: rgba(0, 0, 0, 0.02);
+            border: 1px dashed var(--border-color);
+            color: #70757a;
+            padding: 16px;
+            border-radius: var(--radius);
+            text-align: center;
+            font-size: 14px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .placeholder-message {
+                background-color: rgba(255, 255, 255, 0.02);
+            }
+        }
+
+        .table-section {
+            display: none;
+        }
+
+        .table-section.active {
+            display: block;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 24px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            font-weight: 600;
+            color: #70757a;
+        }
+
+        td {
+            font-weight: 700;
+        }
+
+        .td-val {
+            text-align: right;
+            font-family: monospace;
+            font-size: 15px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Instructions for iOS/Android home screen adding */
+        .pwa-instruction {
+            margin-top: 24px;
+            font-size: 11px;
+            color: #70757a;
+            background: rgba(0, 0, 0, 0.01);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .pwa-instruction {
+                background: rgba(255, 255, 255, 0.01);
+            }
+        }
+
+        .pwa-instruction summary {
+            cursor: pointer;
+            font-weight: bold;
+            outline: none;
+        }
+
+        .pwa-instruction p {
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <h1>⚙️ 圧力単位変換</h1>
+        <div class="subtitle">MPa / psi / kg/cm² を一瞬で相互変換</div>
+    </header>
+
+    <!-- 入力エリア -->
+    <div class="input-group">
+        <label for="input-value">圧力計の数値を入力</label>
+        <input type="number" id="input-value" inputmode="decimal" placeholder="数値を入力..." step="any">
+    </div>
+
+    <!-- 単位選択エリア -->
+    <div class="unit-select-grid">
+        <div class="select-group">
+            <label for="from-unit">変換前</label>
+            <select id="from-unit">
+                <option value="MPa" selected>MPa (メガパスカル)</option>
+                <option value="psi">psi (ポンド/平方インチ)</option>
+                <option value="kg/cm²">kg/cm² (キログラム/平方cm)</option>
+            </select>
+        </div>
+        <div class="select-group">
+            <label for="to-unit">変換後</label>
+            <select id="to-unit">
+                <option value="MPa">MPa (メガパスカル)</option>
+                <option value="psi" selected>psi (ポンド/平方インチ)</option>
+                <option value="kg/cm²">kg/cm² (キログラム/平方cm)</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- メッセージ / 変換結果 -->
+    <div id="placeholder" class="placeholder-message">
+        ⚠️ 上のボックスに圧力計の数値を入力してください。
+    </div>
+
+    <div id="result-container" class="result-box">
+        <div class="result-title">💡 変換結果</div>
+        <div class="result-value" id="result-display"></div>
+    </div>
+
+    <!-- 一括換算表 -->
+    <div id="table-container" class="table-section">
+        <div class="divider"></div>
+        <label>📋 この数値の3大単位一覧</label>
+        <table>
+            <thead>
+                <tr>
+                    <th>単位</th>
+                    <th style="text-align: right;">数値</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>MPa</td>
+                    <td class="td-val" id="val-mpa">-</td>
+                </tr>
+                <tr>
+                    <td>psi</td>
+                    <td class="td-val" id="val-psi">-</td>
+                </tr>
+                <tr>
+                    <td>kg/cm²</td>
+                    <td class="td-val" id="val-kg">-</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PWAインストールガイド -->
+    <details class="pwa-instruction">
+        <summary>📱 スマホのホーム画面に追加してオフラインで使う方法</summary>
+        <p><strong>iOS (Safari):</strong> 画面下部の「共有ボタン（四角から矢印が飛び出しているアイコン）」をタップし、<strong>「ホーム画面に追加」</strong>を選択します。</p>
+        <p><strong>Android (Chrome):</strong> 右上の「メニュー（縦の3点リーダー）」をタップし、<strong>「アプリをインストール」</strong>または<strong>「ホーム画面に追加」</strong>を選択します。</p>
+        <p>※追加後は機内モード（完全に電波のない状態）でもサクサク動作します。</p>
+    </details>
+</div>
+
+<script>
+    // 1 Pa を基準とした換算係数
+    const PA_COEFFICIENTS = {
+        "MPa": 1000000.0,
+        "psi": 6894.757,
+        "kg/cm²": 98066.5
+    };
+
+    const inputVal = document.getElementById('input-value');
+    const fromUnit = document.getElementById('from-unit');
+    const toUnit = document.getElementById('to-unit');
+    const placeholder = document.getElementById('placeholder');
+    const resultContainer = document.getElementById('result-container');
+    const resultDisplay = document.getElementById('result-display');
+    const tableContainer = document.getElementById('table-container');
+
+    const valMpa = document.getElementById('val-mpa');
+    const valPsi = document.getElementById('val-psi');
+    const valKg = document.getElementById('val-kg');
+
+    function formatNumber(num) {
+        // 小数点第4位まで表示。不要なゼロはトリムする
+        return parseFloat(num.toFixed(4)).toLocaleString('ja-JP', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 4
+        });
+    }
+
+    function calculate() {
+        const val = parseFloat(inputVal.value);
+
+        if (isNaN(val)) {
+            // 入力がないとき
+            placeholder.style.display = 'block';
+            resultContainer.classList.remove('active');
+            tableContainer.classList.remove('active');
+            return;
+        }
+
+        placeholder.style.display = 'none';
+        resultContainer.classList.add('active');
+        tableContainer.classList.add('active');
+
+        const from = fromUnit.value;
+        const to = toUnit.value;
+
+        // 計算ロジック: 一度Paに換算してからターゲット単位へ
+        const valueInPa = val * PA_COEFFICIENTS[from];
+        const result = valueInPa / PA_COEFFICIENTS[to];
+
+        // 変換結果表示
+        resultDisplay.innerHTML = `${val} ${from} = <span style="color: var(--accent-color);">${formatNumber(result)}</span> ${to}`;
+
+        // 一括換算表の計算
+        const mpaVal = valueInPa / PA_COEFFICIENTS['MPa'];
+        const psiVal = valueInPa / PA_COEFFICIENTS['psi'];
+        const kgVal = valueInPa / PA_COEFFICIENTS['kg/cm²'];
+
+        valMpa.textContent = formatNumber(mpaVal);
+        valPsi.textContent = formatNumber(psiVal);
+        valKg.textContent = formatNumber(kgVal);
+    }
+
+    // イベントリスナーの登録
+    inputVal.addEventListener('input', calculate);
+    fromUnit.addEventListener('change', calculate);
+    toUnit.addEventListener('change', calculate);
+
+    // サービスワーカーをインラインで動かして完全なオフラインキャッシュを持たせる
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            const swCode = `
+                const CACHE_NAME = 'pressure-app-v1';
+                const urlsToCache = ['./', 'index.html'];
+
+                self.addEventListener('install', event => {
+                    event.waitUntil(
+                        caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+                    );
+                });
+
+                self.addEventListener('fetch', event => {
+                    event.respondWith(
+                        caches.match(event.request).then(response => {
+                            return response || fetch(event.request);
+                        })
+                    );
+                });
+            `;
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            navigator.serviceWorker.register(swUrl).catch(err => console.log('SW registration failed:', err));
+        });
+    }
+</script>
+
+</body>
+</html>
